@@ -1,24 +1,31 @@
 import './get_product.scss'
 import { FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
-import Add from '../add card/Add'
 
 import axios from 'axios'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SearchLogo from '../../image/img/search.svg'
 
-const Get_Product = (props) => {
-    const [data, setData] = useState([])
-    useEffect(async () => {
-        try {
-            const response = await axios.get('https://64a6fca7096b3f0fcc80ef97.mockapi.io/products')
-            const data = response.data
-            setData(data)
-        } catch (error) {
-            alert(error)
+const Get_Product = () => {
+    const [data,setData] = useState([])
+    useEffect( () => {
+        const ggg = async () => {
+            try {
+                await axios.get('https://64a6fca7096b3f0fcc80ef97.mockapi.io/products')
+               .then(item => {
+                setData(item.data)
+                   console.log(item.data)
+               })
+            } catch (error) {
+                alert(error)
+            }
         }
-    }, [])
+
+        
+            ggg()
+        
+    }, [data])
 
     const [currentPage, setCurrentPage] = useState(0);
 
@@ -34,7 +41,8 @@ const Get_Product = (props) => {
     const handleDelete = (id) => {
         try {
             axios.delete(`https://64a6fca7096b3f0fcc80ef97.mockapi.io/products/${id}`)
-                .then(res => console.log(res.data))
+            return null
+
         } catch (error) {
             alert(console.error)
         }
@@ -43,16 +51,11 @@ const Get_Product = (props) => {
     }
 
     const handleEdit = (id) => {
-        axios.put(`https://64a6fca7096b3f0fcc80ef97.mockapi.io/products/${id}`)
-            .then(res => {
-                <Add name={res.data}/>
-                console.log(res.data);
-            })
+           localStorage.setItem('id', id)
     }
 
     const handleValue = (e) => {
         setOptionValue(e.target.value)
-        console.log(+optionValue);
     }
 
     return (
@@ -74,8 +77,9 @@ const Get_Product = (props) => {
                 </div>
                 <div className="main-nav">
                     <table>
+                    <thead>
                         <tr>
-                            <th><input type="checkbox" checked /></th>
+                            <th><input type="checkbox" /></th>
                             <th>Наименование</th>
                             <th>Артикул </th>
                             <th>Бренд</th>
@@ -84,8 +88,10 @@ const Get_Product = (props) => {
                             <th></th>
                             <th></th>
                         </tr>
+                        </thead>
+                        <tbody>
 
-                        {data && currentPageData.sort().slice(0, +optionValue).filter((item) => {
+                        {data && currentPageData.sort().slice(0, +optionValue ).filter((item) => {
                             if (searchValue === '') {
                                 return item
                             } else if (item.madeIn.toLowerCase().includes(searchValue.toLowerCase())) {
@@ -99,10 +105,11 @@ const Get_Product = (props) => {
                                 <td>{item.brand} </td>
                                 <td>{item.price}$ </td>
                                 <td>{item.priceInSale}$</td>
-                                <td ><FaEdit onClick={(e) => handleEdit(item.id)} /></td>
+                                <td><Link to='/add'><FaEdit onClick={(e) => handleEdit(item.id)} /></Link></td>
                                 <td><MdDelete onClick={(e) => handleDelete(item.id)} /></td>
                             </tr>
                         ))}
+                        </tbody>
                     </table>
                 </div>
                 <div className="option-and-pagination">
