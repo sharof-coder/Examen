@@ -2,7 +2,7 @@
 import './App.scss';
 import Home from './pages/home/home';
 import Add from './component/add card/Add';
-import Login from './component/login/Login'
+import Login from './component/Login/login'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Prooducts from './component/all-product/Prooducts';
 import 'bootstrap/dist/css/bootstrap.min.css';
